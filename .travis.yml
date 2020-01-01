@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t wilkinsleung/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true wilkinsleung/react-test npm run test
+
+after_success:
+  - docker build -t wilkinsleung/multi-client ./client
+  - docker build -t wilkinsleung/multi-nginx  ./nginx
+  - docker build -t wilkinsleung/multi-server ./server
+  - docker build -t wilkinsleung/multi-worker ./worker
+  # Login to docker CLI
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+  # Take those image and push them to docker hub
+  - docker push wilkinsleung/multi-client
+  - docker push wilkinsleung/multi-nginx
+  - docker push wilkinsleung/multi-server
+  - docker push wilkinsleung/multi-worker
