@@ -20,3 +20,15 @@ after_success:
   - docker push wilkinsleung/multi-nginx
   - docker push wilkinsleung/multi-server
   - docker push wilkinsleung/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: ap-southeast-2
+  app: fibCalc-multi-docker
+  env: FibcalcMultiDocker-env
+  bucket_name: elasticbeanstalk-ap-southeast-2-976392945067
+  bucket_path: fibCalc-multi-docker
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
